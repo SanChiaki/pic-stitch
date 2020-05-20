@@ -30,11 +30,18 @@ function drawPic() {
     for(let i = 0;i<pics.length; i++) {
         height += pics[i].naturalHeight;
         width += pics[i].naturalWidth;
+
+        // 临时
+        maxHeight = pics[i].naturalHeight > maxHeight ? pics[i].naturalHeight : maxHeight;
+        maxWidth = pics[i].naturalWidth > maxWidth ? pics[i].naturalWidth : maxWidth;
+
     }
     
     const canvas = document.getElementById("canvas");
     canvas.width = width;
-    canvas.height = height;
+    // canvas.height = height;
+    canvas.height = maxHeight;//临时
+
     const context = canvas.getContext("2d");
     for(let i = 0,x=0,y=0;i<pics.length; i++) {
         context.drawImage(pics[i],x,y);
@@ -42,4 +49,24 @@ function drawPic() {
         // width += pics[i].naturalWidth;
         x += pics[i].naturalWidth;
     }
+
+    exportCanvasAsPNG('canvas', '拼接');
+}
+
+function exportCanvasAsPNG(id, fileName) {
+
+    var canvasElement = document.getElementById(id);
+
+    var MIME_TYPE = "image/png";
+
+    var imgURL = canvasElement.toDataURL(MIME_TYPE);
+
+    var dlLink = document.createElement('a');
+    dlLink.download = fileName;
+    dlLink.href = imgURL;
+    dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+
+    document.body.appendChild(dlLink);
+    dlLink.click();
+    document.body.removeChild(dlLink);
 }
